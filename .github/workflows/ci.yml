@@ -125,5 +125,6 @@ jobs:
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
             -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -e NOTIFICATION_SERVER=${{ secrets.NOTIFICATION_SERVER }} \
             $FULL_IMAGE_NAME
           "
