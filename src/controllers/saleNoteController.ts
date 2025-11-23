@@ -21,19 +21,27 @@ class saleNoteController {
         }
     };
 
-    async getSaleNoteById(req: Request, res: Response){
+    async getSaleNoteById(req: Request, res: Response) {
         try {
             const { id } = req.params;
-        
+
+            if (!id) {
+                return res.status(400).json({ error: "Missing client ID." });
+            }
+
             const saleNote = await prisma.notaVenta.findUnique({
                 where: { id }
             });
 
+            if (!saleNote) {
+                return res.status(404).json({ error: "Sale Note not found." });
+            }
+
             return res.json(saleNote);
-        }
-        catch(e){
-            console.log('error:', e);
-            return res.status(500).json({ error: 'There was an error listing the Sale Note' });
+        } 
+        catch (e) {
+            console.error("error:", e);
+            return res.status(500).json({ error: "There was an error listing the Sale Note." });
         }
     };
 
