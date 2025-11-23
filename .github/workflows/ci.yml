@@ -116,11 +116,11 @@ jobs:
             docker pull $FULL_IMAGE_NAME
 
             echo 'Stopping and removing old container...'
-            docker stop catalogs || true
-            docker rm catalogs || true
+            docker stop saleNotes || true
+            docker rm saleNotes || true
 
             echo 'Running new container...'
-            docker run -d --name catalogs -p 80:3000 \
+            docker run -d --name saleNotes -p 80:3000 \
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
