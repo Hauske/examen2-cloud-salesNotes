@@ -1,0 +1,87 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id                  String     @id @default(uuid())
+  razonSocial         TipoSociedad
+  nombreComercial     String
+  rfc                 String     @unique
+  correoElectronico   String
+  telefono            String
+  domicilios          Domicilio[]
+  notasVenta          NotaVenta[]
+}
+
+enum TipoSociedad {
+  S_EN_NC        // Sociedad en Nombre Colectivo
+  S_EN_CS        // Sociedad en Comandita Simple
+  S_DE_RL        // Sociedad de Responsabilidad Limitada
+  SA             // Sociedad Anónima
+  S_EN_C_POR_A   // Sociedad en Comandita por Acciones
+  S_COOP         // Sociedad Cooperativa
+  SAS            // Sociedad por Acciones Simplificada
+}
+
+model Domicilio {
+  id          String   @id @default(uuid())
+  clienteId   String
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  domicilio   String
+  colonia     String
+  municipio   String
+  estado      String
+  tipo        TipoDireccion
+
+  NotaVenta NotaVenta[]
+}
+
+enum TipoDireccion {
+  FACTURACION
+  ENVIO
+}
+
+model Producto {
+  id            String   @id @default(uuid())
+  nombre        String
+  unidadMedida  UnidadMedia
+  precioBase    Float
+  contenidos    ContenidoNotaVenta[]
+}
+
+enum UnidadMedia {
+  H87
+  KGM
+  LTR
+  MTR
+  E48
+}
+
+model NotaVenta {
+  id             String     @id @default(uuid())
+  folio          String     @unique
+  clienteId      String
+  cliente        Cliente    @relation(fields: [clienteId], references: [id])
+  domicilioId    String
+  domicilio      Domicilio  @relation(fields: [domicilioId], references: [id])
+  total          Float
+  contenidos     ContenidoNotaVenta[]
+}
+
+model ContenidoNotaVenta {
+  id              String    @id @default(uuid())
+  notaVentaId     String
+  notaVenta       NotaVenta @relation(fields: [notaVentaId], references: [id], onDelete: Cascade)
+  productoId      String
+  producto        Producto  @relation(fields: [productoId], references: [id])
+  cantidad        Int
+  precioUnitario  Float
+  importe         Float
+}
